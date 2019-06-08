@@ -1,21 +1,36 @@
 <template>
   <div>
-    <div style="text-align: left;">
+    <div style="display:flex;height:40px;">
       <!-- 新增 -->
       <el-button
         size="medium"
         type="primary"
         @click="dialogFormVisible = true"
         :disabled="judgePurview"
-      >新增详情</el-button>
+        style="height:40px;"
+      >新增项目</el-button>
       <!-- 搜索 -->
-      <el-input placeholder="请输入内容" v-model="value" class="input-with-select">
+      <!-- <el-input placeholder="请输入内容" v-model="value" class="input-with-select">
         <el-select v-model="key" slot="prepend" placeholder="选择搜索">
           <el-option label="选择搜索" value></el-option>
           <el-option label="项目名" value="projectName"></el-option>
         </el-select>
         <el-button slot="append" icon="el-icon-search" @click="searchSpecification"></el-button>
-      </el-input>
+      </el-input>-->
+      <el-form :inline="true" :model="search" style="margin-left:40px;">
+        <el-form-item label="项目名称">
+          <el-input v-model="search.projectName" placeholder="项目名称"></el-input>
+        </el-form-item>
+        <el-form-item label="项目状态">
+          <el-select v-model="search.state" placeholder="项目状态">
+            <el-option label="未验收" value="0"></el-option>
+            <el-option label="已验收" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="searchSpecification">查询</el-button>
+        </el-form-item>
+      </el-form>
       <el-dialog title="新增项目规格" :visible.sync="dialogFormVisible" width="570px">
         <el-form :model="form" :rules="rules" ref="ruleForm">
           <el-form-item label="项目名称：" :label-width="formLabelWidth" prop="projectName">
@@ -74,24 +89,29 @@
           </template>
         </el-table-column>
         <el-table-column prop="state" label="项目状态">
-          <template slot-scope="scope">{{formatState(scope.row.state)}}</template>
+          <template slot-scope="scope">
+            <span :class="formatState(scope.row.state,'class')">{{formatState(scope.row.state)}}</span>
+          </template>
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="210">
           <template slot-scope="scope">
             <el-button
-              type="text"
+              type="success"
+              plain
               size="mini"
               @click="changeState(scope)"
               :disabled="judgePurview || scope.row.state === 1 "
             >验收</el-button>
             <el-button
-              type="text"
+              type="primary"
+              plain
               size="mini"
               @click="updateItem(scope)"
               :disabled="judgePurview"
             >修改</el-button>
             <el-button
-              type="text"
+              type="danger"
+              plain
               size="mini"
               @click="removeItem(scope)"
               :disabled="judgePurview"
@@ -199,8 +219,6 @@ export default {
       callback();
     };
     return {
-      key: "",
-      value: "",
       dialogFormVisible: false,
       dialogUpdateFormVisible: false,
       form: {
@@ -222,6 +240,10 @@ export default {
       updateRules: {
         projectName: [{ validator: validatePjcName, trigger: "blur" }],
         end_time: [{ validator: validateET, trigger: "blur" }]
+      },
+      search: {
+        projectName: "",
+        state: ""
       },
       limit: 1,
       tableData: [],
@@ -263,12 +285,22 @@ export default {
       }
       return str;
     },
-    formatState(state) {
-      if (state === 1) {
-        return "以验收";
+    formatState(state, type) {
+      let str;
+      if (type) {
+        if (state === 1) {
+          str = "success";
+        } else {
+          str = "warning";
+        }
       } else {
-        return "待验收";
+        if (state === 1) {
+          str = "已验收";
+        } else {
+          str = "待验收";
+        }
       }
+      return str;
     },
     handleSizeChange(val) {
       this.pagination.rows = parseInt(val);
@@ -347,7 +379,7 @@ export default {
       }
     },
     viewPDF(data) {
-      window.open(requestUrl + "/upload/" + data.row.pdfName);
+      window.open(`${requestUrl}/PDF.html?fileName=${data.row.pdfName}`);
     },
     viewQRCode(data) {
       this.centerDialogVisible = true;
@@ -357,7 +389,7 @@ export default {
         this.qrcode = new QRCode("qrcode", {
           width: 200,
           height: 200, // 高度
-          text: requestUrl + "/upload/" + data.row.pdfName // 二维码内容
+          text: `${requestUrl}/PDF.html?fileName=${data.row.pdfName}` // 二维码内容
           // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
           // background: '#f0f',   // 背景色
           // foreground: '#ff0'    // 前景色
@@ -463,9 +495,16 @@ export default {
       });
     },
     searchSpecification() {
-      let { key, value } = this,
-        { rows, currentPage } = this.pagination;
-      this.getSpecificationData({ key, value, rows, currentPage });
+      let { search } = this,
+        { rows, currentPage } = this.pagination,
+        searchObj = {};
+      if (search.projectName) {
+        searchObj.projectName = search.projectName;
+      }
+      if (search.state) {
+        searchObj.state = search.state;
+      }
+      this.getSpecificationData({ searchObj, rows, currentPage });
     }
   },
   created() {
@@ -510,5 +549,9 @@ export default {
 
 .error {
   color: #f56c6c;
+}
+
+.success {
+  color: #67c23a;
 }
 </style>

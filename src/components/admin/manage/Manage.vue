@@ -14,11 +14,12 @@
           text-color="#FFFFFF"
           active-text-color="#336699"
           style="border:none;"
+          default-active="/admin/manage/specification"
           router
         >
           <el-menu-item index="/admin/manage/specification">项目管理</el-menu-item>
-          <el-menu-item index="/admin/manage/specification">项目维护</el-menu-item>
-          <el-menu-item index="/admin/manage/specification">远程服务平台</el-menu-item>
+          <el-menu-item index="/admin/manage">项目维护</el-menu-item>
+          <el-menu-item index="/admin/manage">远程服务平台</el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>
