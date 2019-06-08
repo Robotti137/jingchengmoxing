@@ -368,12 +368,12 @@ export default {
         }
       });
     },
-    uploadSuccess(response, file, fileList) {
+    uploadSuccess(response) {
       if (response.status === 1) {
         this.form.pdfName = response.filename;
       }
     },
-    updateUploadSuccess(response, file, fileList) {
+    updateUploadSuccess(response) {
       if (response.status === 1) {
         this.updateForm.pdfName = response.filename;
       }
@@ -473,7 +473,6 @@ export default {
       if (flag) {
         return;
       }
-      let { updateRuleForm } = this.$refs;
       flag = true;
       putSpecification(data.row._id, {
         state: 1

@@ -93,7 +93,7 @@ export default {
                 center: true
               });
               setTimeout(() => {
-                this.$router.replace("/admin/manage");
+                this.$router.replace("/admin/manage/specification");
               }, 300);
             } else {
               this.$message({
@@ -111,7 +111,7 @@ export default {
         username: "来宾用户"
       };
       sessionStorage.setItem("jcmx-userinfo", JSON.stringify(guest));
-      this.$router.replace("/admin/manage");
+      this.$router.replace("/admin/manage/specification");
     }
   },
   components: {
