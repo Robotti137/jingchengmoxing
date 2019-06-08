@@ -1,0 +1,514 @@
+<template>
+  <div>
+    <div style="text-align: left;">
+      <!-- 新增 -->
+      <el-button
+        size="medium"
+        type="primary"
+        @click="dialogFormVisible = true"
+        :disabled="judgePurview"
+      >新增详情</el-button>
+      <!-- 搜索 -->
+      <el-input placeholder="请输入内容" v-model="value" class="input-with-select">
+        <el-select v-model="key" slot="prepend" placeholder="选择搜索">
+          <el-option label="选择搜索" value></el-option>
+          <el-option label="项目名" value="projectName"></el-option>
+        </el-select>
+        <el-button slot="append" icon="el-icon-search" @click="searchSpecification"></el-button>
+      </el-input>
+      <el-dialog title="新增项目规格" :visible.sync="dialogFormVisible" width="570px">
+        <el-form :model="form" :rules="rules" ref="ruleForm">
+          <el-form-item label="项目名称：" :label-width="formLabelWidth" prop="projectName">
+            <el-input v-model="form.projectName" autocomplete="off" style="width:360px;"></el-input>
+          </el-form-item>
+          <el-form-item label="结束时间：" :label-width="formLabelWidth" prop="end_time">
+            <el-date-picker
+              v-model="form.end_time"
+              type="date"
+              placeholder="选择日期"
+              style="width:360px;"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="PDF上传：" :label-width="formLabelWidth">
+            <el-upload
+              class="upload-demo"
+              drag
+              accept=".pdf, .PDF"
+              :action="requestUrl + '/upload'"
+              :on-success="uploadSuccess"
+              multiple
+              :limit="limit"
+              ref="elUpload"
+            >
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">
+                将文件拖到此处，或
+                <em>点击上传</em>
+              </div>
+              <div class="el-upload__tip" slot="tip">只能上传pdf/PDF文件，且只能上传一个</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="addSpecification">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
+    <div style="margin-top:20px;">
+      <!-- 表格 -->
+      <el-table :data="tableData" style="width:100%;">
+        <el-table-column prop="create_time" label="创建时间" sortable width="200"></el-table-column>
+        <el-table-column prop="end_time" label="验收剩余天数" width="200">
+          <template slot-scope="scope">
+            <span
+              :class="dayState(formatTime(scope.row.end_time),'class')"
+            >{{dayState(formatTime(scope.row.end_time),'')}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="projectName" label="项目名称"></el-table-column>
+        <el-table-column label="文档" width="200">
+          <template slot-scope="scope">
+            <el-button type="text" size="mini" @click="viewPDF(scope)">查看</el-button>
+            <el-button type="text" size="mini" @click="viewQRCode(scope)">二维码</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column prop="state" label="项目状态">
+          <template slot-scope="scope">{{formatState(scope.row.state)}}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="200">
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="mini"
+              @click="changeState(scope)"
+              :disabled="judgePurview || scope.row.state === 1 "
+            >验收</el-button>
+            <el-button
+              type="text"
+              size="mini"
+              @click="updateItem(scope)"
+              :disabled="judgePurview"
+            >修改</el-button>
+            <el-button
+              type="text"
+              size="mini"
+              @click="removeItem(scope)"
+              :disabled="judgePurview"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <div class="block">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pagination.currentPage"
+          :page-sizes="[10, 15, 20, 30]"
+          :page-size="10"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="pagination.total"
+        ></el-pagination>
+      </div>
+    </div>
+    <!-- 二维码 -->
+    <el-dialog title="二维码" :visible.sync="centerDialogVisible" width="30%" center>
+      <div id="qrcode" ref="qrcode"></div>
+    </el-dialog>
+    <!-- 修改 -->
+    <el-dialog title="修改项目规格" :visible.sync="dialogUpdateFormVisible" width="570px">
+      <el-form :model="updateForm" :rules="updateRules" ref="updateRuleForm">
+        <el-form-item label="项目名称：" :label-width="formLabelWidth" prop="projectName">
+          <el-input v-model="updateForm.projectName" autocomplete="off" style="width:360px;"></el-input>
+        </el-form-item>
+        <el-form-item label="结束时间：" :label-width="formLabelWidth" prop="end_time">
+          <el-date-picker
+            v-model="updateForm.end_time"
+            type="date"
+            placeholder="选择日期"
+            style="width:360px;"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="PDF上传：" :label-width="formLabelWidth">
+          <el-upload
+            class="upload-demo"
+            drag
+            accept=".pdf, .PDF"
+            :action="requestUrl + '/upload'"
+            :on-success="updateUploadSuccess"
+            multiple
+            :limit="limit"
+            ref="elUploadUpdate"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              将文件拖到此处，或
+              <em>点击上传</em>
+            </div>
+            <div class="el-upload__tip" slot="tip">只能上传pdf/PDF文件，且只能上传一个</div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogUpdateFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateSpecification">确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import QRCode from "qrcodejs2";
+import { requestUrl } from "@/default";
+import { Message } from "element-ui";
+import { getFormatTime, intervalTime, transformTimestamp } from "@/utils/time";
+import {
+  postSpecification,
+  getSpecification,
+  deleteSpecification,
+  putSpecification
+} from "@/utils/api";
+let flag = false;
+export default {
+  data() {
+    let validatePjcName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请填写项目名"));
+      } else {
+        callback();
+      }
+    };
+    let validateET = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请选择时间"));
+        return;
+      }
+      let nowTime = transformTimestamp(
+        getFormatTime().substring(0, 10)
+      ).getTime();
+      let endTime;
+      if (typeof value === "string") {
+        endTime = transformTimestamp(value).getTime();
+      } else {
+        endTime = value.getTime();
+      }
+      if (endTime < nowTime) {
+        callback(new Error("结束时间不能小于今天"));
+      }
+      callback();
+    };
+    return {
+      key: "",
+      value: "",
+      dialogFormVisible: false,
+      dialogUpdateFormVisible: false,
+      form: {
+        projectName: "",
+        pdfName: "",
+        end_time: "",
+        state: 0
+      },
+      updateForm: {
+        projectName: "",
+        pdfName: "",
+        end_time: ""
+      },
+      formLabelWidth: "100px",
+      rules: {
+        projectName: [{ validator: validatePjcName, trigger: "blur" }],
+        end_time: [{ validator: validateET, trigger: "blur" }]
+      },
+      updateRules: {
+        projectName: [{ validator: validatePjcName, trigger: "blur" }],
+        end_time: [{ validator: validateET, trigger: "blur" }]
+      },
+      limit: 1,
+      tableData: [],
+      pagination: {},
+      centerDialogVisible: false,
+      qrcode: null,
+      dataItemInfo: {},
+      requestUrl
+    };
+  },
+  computed: {
+    judgePurview() {
+      if (JSON.parse(sessionStorage.getItem("jcmx-userinfo")).purview == 1) {
+        return false;
+      }
+      return true;
+    }
+  },
+  methods: {
+    formatTime(time) {
+      return parseInt(intervalTime(time).day);
+    },
+    dayState(day, type) {
+      let str = "";
+      if (type === "class") {
+        if (day <= 7 && day > 0) {
+          str = "warning";
+        } else if (day <= 0) {
+          str = "error";
+        }
+      } else {
+        if (day === 0) {
+          str = "今天验收";
+        } else if (day <= 0) {
+          str = "已超时";
+        } else {
+          str = `${day}天`;
+        }
+      }
+      return str;
+    },
+    formatState(state) {
+      if (state === 1) {
+        return "以验收";
+      } else {
+        return "待验收";
+      }
+    },
+    handleSizeChange(val) {
+      this.pagination.rows = parseInt(val);
+      let { currentPage, rows } = this.pagination;
+      this.getSpecificationData({ currentPage, rows });
+    },
+    handleCurrentChange(val) {
+      this.pagination.currentPage = parseInt(val);
+      let { currentPage, rows } = this.pagination;
+      this.getSpecificationData({ currentPage, rows });
+    },
+    getSpecificationData(pagination = {}) {
+      if (flag) {
+        return;
+      }
+      flag = true;
+      getSpecification(pagination).then(data => {
+        flag = false;
+        this.tableData = data.data;
+        this.pagination = data.pagination;
+      });
+    },
+    addSpecification() {
+      if (flag) {
+        return;
+      }
+      let { projectName, pdfName, end_time, state } = this.form,
+        { ruleForm, elUpload } = this.$refs;
+      end_time = getFormatTime(end_time);
+      ruleForm.validate(valid => {
+        if (valid) {
+          if (!pdfName) {
+            this.$message({
+              message: "请上传PDF文件",
+              type: "error",
+              center: true
+            });
+            return;
+          }
+          flag = true;
+          postSpecification({
+            projectName,
+            pdfName,
+            end_time,
+            state
+          }).then(data => {
+            flag = false;
+            let type;
+            if (data.status === 1) {
+              type = "success";
+              this.dialogFormVisible = false;
+              this.getSpecificationData();
+              ruleForm.resetFields();
+              elUpload.clearFiles();
+              this.form.pdfName = "";
+            } else {
+              type = "error";
+            }
+            this.$message({
+              message: data.message,
+              type,
+              center: true
+            });
+          });
+        }
+      });
+    },
+    uploadSuccess(response, file, fileList) {
+      if (response.status === 1) {
+        this.form.pdfName = response.filename;
+      }
+    },
+    updateUploadSuccess(response, file, fileList) {
+      if (response.status === 1) {
+        this.updateForm.pdfName = response.filename;
+      }
+    },
+    viewPDF(data) {
+      window.open(requestUrl + "/upload/" + data.row.pdfName);
+    },
+    viewQRCode(data) {
+      this.centerDialogVisible = true;
+
+      this.$nextTick(function() {
+        this.$refs.qrcode.innerHTML = "";
+        this.qrcode = new QRCode("qrcode", {
+          width: 200,
+          height: 200, // 高度
+          text: requestUrl + "/upload/" + data.row.pdfName // 二维码内容
+          // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+          // background: '#f0f',   // 背景色
+          // foreground: '#ff0'    // 前景色
+        });
+      });
+    },
+    removeItem(data) {
+      if (flag) {
+        return;
+      }
+      this.$confirm("此操作将永久删除该条数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          flag = true;
+          deleteSpecification(data.row._id).then(data => {
+            flag = false;
+            let type;
+            if (data.status === 1) {
+              type = "success";
+              this.tableData.splice(data.$index, 1);
+            } else {
+              type = "error";
+            }
+            this.$message({
+              message: data.message,
+              type,
+              center: true
+            });
+          });
+        })
+        .catch(() => {
+          return;
+        });
+    },
+    updateItem(data) {
+      this.dialogUpdateFormVisible = true;
+      this.updateForm.projectName = data.row.projectName;
+      this.updateForm.pdfName = data.row.pdfName;
+      this.updateForm.end_time = data.row.end_time;
+      this.dataItemInfo.id = data.row._id;
+      this.dataItemInfo.$index = data.$index;
+    },
+    updateSpecification() {
+      if (flag) {
+        return;
+      }
+      let { updateRuleForm, elUploadUpdate } = this.$refs;
+      updateRuleForm.validate(valid => {
+        if (valid) {
+          let { projectName, pdfName, end_time } = this.updateForm;
+          end_time = getFormatTime(end_time);
+          flag = true;
+          putSpecification(this.dataItemInfo.id, {
+            projectName,
+            pdfName,
+            end_time
+          }).then(data => {
+            flag = false;
+            let type;
+            if (data.status === 1) {
+              type = "success";
+              this.getSpecificationData();
+              this.dialogUpdateFormVisible = false;
+              elUploadUpdate.clearFiles();
+            } else {
+              type = "error";
+            }
+            this.$message({
+              message: data.message,
+              type,
+              center: true
+            });
+          });
+        }
+      });
+    },
+    changeState(data) {
+      if (flag) {
+        return;
+      }
+      let { updateRuleForm } = this.$refs;
+      flag = true;
+      putSpecification(data.row._id, {
+        state: 1
+      }).then(data => {
+        flag = false;
+        let type;
+        if (data.status === 1) {
+          type = "success";
+          this.getSpecificationData();
+          this.dialogUpdateFormVisible = false;
+        } else {
+          type = "error";
+        }
+        this.$message({
+          message: data.message,
+          type,
+          center: true
+        });
+      });
+    },
+    searchSpecification() {
+      let { key, value } = this,
+        { rows, currentPage } = this.pagination;
+      this.getSpecificationData({ key, value, rows, currentPage });
+    }
+  },
+  created() {
+    this.getSpecificationData();
+  },
+  components: {
+    QRCode
+  }
+};
+</script>
+
+<style scoped>
+.customize-el-button {
+  background-color: #66cccc;
+  border-color: #66cccc;
+}
+.customize-el-button:hover {
+  background-color: #78b9b9;
+  border-color: #78b9b9;
+}
+
+.customize-el-button:focus {
+  background-color: #78b9b9;
+  border-color: #78b9b9;
+}
+
+#qrcode {
+  display: flex;
+  justify-content: center;
+}
+.input-with-select {
+  width: 375px;
+  margin-left: 10px;
+}
+.el-select {
+  width: 110px;
+}
+
+.warning {
+  color: #e6a23c;
+}
+
+.error {
+  color: #f56c6c;
+}
+</style>
