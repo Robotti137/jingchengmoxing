@@ -10,16 +10,13 @@
         style="height:40px;"
       >新增项目</el-button>
       <!-- 搜索 -->
-      <!-- <el-input placeholder="请输入内容" v-model="value" class="input-with-select">
-        <el-select v-model="key" slot="prepend" placeholder="选择搜索">
-          <el-option label="选择搜索" value></el-option>
-          <el-option label="项目名" value="projectName"></el-option>
-        </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="searchSpecification"></el-button>
-      </el-input>-->
       <el-form :inline="true" :model="search" style="margin-left:40px;">
         <el-form-item label="项目名称">
-          <el-input v-model="search.projectName" placeholder="项目名称"></el-input>
+          <el-input
+            v-model="search.projectName"
+            placeholder="项目名称"
+            @keyup.enter.native="searchSpecification"
+          ></el-input>
         </el-form-item>
         <el-form-item label="项目状态">
           <el-select v-model="search.state" placeholder="项目状态">

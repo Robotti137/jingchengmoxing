@@ -1,6 +1,6 @@
 <template>
   <div class="login-background">
-    <div class="login-container">
+    <div class="login-container" @keyup.enter="submitForm('ruleForm')">
       <el-card class="box-card" shadow="always">
         <p class="login-title">
           <span>精诚模型项目后台管理系统</span>
