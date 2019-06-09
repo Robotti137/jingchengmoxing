@@ -99,6 +99,7 @@
               type="text"
               size="mini"
               @click="updateAcceptanceVisible = true;_id = scope.row._id"
+              :disabled="judgePurview"
             >修改</el-button>
           </template>
         </el-table-column>
