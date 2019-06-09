@@ -2,8 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Login from '../components/admin/Login'
-import Manage from '../components/admin/manage/Manage'
-import Specification from '../components/admin/manage/Specification'
+import Manage from '../components/admin/manage'
+import Project from '../components/admin/project'
+import Maintain from '../components/admin/maintain'
+import Remote from '../components/admin/remote'
 
 Vue.use(VueRouter)
 
@@ -27,8 +29,16 @@ let router = new VueRouter({
             component: Manage,
             children: [
                 {
-                    path: '/admin/manage/specification',
-                    component: Specification,
+                    path: '/admin/manage/project',
+                    component: Project,
+                },
+                {
+                    path: '/admin/manage/maintain',
+                    component: Maintain,
+                },
+                {
+                    path: '/admin/manage/remote',
+                    component: Remote,
                 }
             ]
         }

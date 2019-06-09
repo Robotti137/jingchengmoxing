@@ -148,7 +148,7 @@
             style="width:360px;"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="PDF上传：" :label-width="formLabelWidth">
+        <el-form-item label="更新PDF：" :label-width="formLabelWidth">
           <el-upload
             class="upload-demo"
             drag
@@ -164,7 +164,6 @@
               将文件拖到此处，或
               <em>点击上传</em>
             </div>
-            <div class="el-upload__tip" slot="tip">只能上传pdf/PDF文件，且只能上传一个</div>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -472,25 +471,35 @@ export default {
       if (flag) {
         return;
       }
-      flag = true;
-      putSpecification(data.row._id, {
-        state: 1
-      }).then(data => {
-        flag = false;
-        let type;
-        if (data.status === 1) {
-          type = "success";
-          this.getSpecificationData();
-          this.dialogUpdateFormVisible = false;
-        } else {
-          type = "error";
-        }
-        this.$message({
-          message: data.message,
-          type,
-          center: true
+      this.$confirm("是否确定验收?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          flag = true;
+          putSpecification(data.row._id, {
+            state: 1
+          }).then(data => {
+            flag = false;
+            let type;
+            if (data.status === 1) {
+              type = "success";
+              this.getSpecificationData();
+              this.dialogUpdateFormVisible = false;
+            } else {
+              type = "error";
+            }
+            this.$message({
+              message: data.message,
+              type,
+              center: true
+            });
+          });
+        })
+        .catch(() => {
+          return;
         });
-      });
     },
     searchSpecification() {
       let { search } = this,
