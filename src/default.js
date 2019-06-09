@@ -1,4 +1,4 @@
-let requestUrl = 'http://192.168.0.102:3000';
+let requestUrl = 'http://http://www.tortoiseknight.club:3000'
 export {
     requestUrl
 }
