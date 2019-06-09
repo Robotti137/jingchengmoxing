@@ -7,21 +7,21 @@ export const userByLogin = (data) => {
 }
 
 //增加项目规格
-export const postSpecification = (data) => {
-    return post(`${requestUrl}/specification`, data);
+export const postProject = (data) => {
+    return post(`${requestUrl}/project`, data);
 }
 
 //获取项目数据
-export const getSpecification = (data) => {
-    return get(`${requestUrl}/specification`, data);
+export const getProject = (data) => {
+    return get(`${requestUrl}/project`, data);
 }
 
 //删除项目数据
-export const deleteSpecification = (id) => {
-    return deletes(`${requestUrl}/specification/${id}`);
+export const deleteProject = (id) => {
+    return deletes(`${requestUrl}/project/${id}`);
 }
 
 //获修改项目数据
-export const putSpecification = (id, data) => {
-    return put(`${requestUrl}/specification/${id}`, data);
+export const putProject = (id, data) => {
+    return put(`${requestUrl}/project/${id}`, data);
 }

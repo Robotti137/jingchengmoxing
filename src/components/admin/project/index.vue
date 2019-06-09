@@ -15,7 +15,7 @@
           <el-input
             v-model="search.projectName"
             placeholder="项目名称"
-            @keyup.enter.native="searchSpecification"
+            @keyup.enter.native="searchProject"
           ></el-input>
         </el-form-item>
         <el-form-item label="项目状态">
@@ -26,15 +26,15 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchSpecification">查询</el-button>
+          <el-button type="primary" @click="searchProject">查询</el-button>
         </el-form-item>
       </el-form>
-      <el-dialog title="新增项目规格" :visible.sync="dialogFormVisible" width="570px">
+      <el-dialog title="新增项目" :visible.sync="dialogFormVisible" width="570px">
         <el-form :model="form" :rules="rules" ref="ruleForm">
           <el-form-item label="项目名称：" :label-width="formLabelWidth" prop="projectName">
             <el-input v-model="form.projectName" autocomplete="off" style="width:360px;"></el-input>
           </el-form-item>
-          <el-form-item label="结束时间：" :label-width="formLabelWidth" prop="end_time">
+          <el-form-item label="验收时间：" :label-width="formLabelWidth" prop="end_time">
             <el-date-picker
               v-model="form.end_time"
               type="date"
@@ -44,7 +44,6 @@
           </el-form-item>
           <el-form-item label="PDF上传：" :label-width="formLabelWidth">
             <el-upload
-              class="upload-demo"
               drag
               accept=".pdf, .PDF"
               :action="requestUrl + '/upload'"
@@ -64,7 +63,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addSpecification">确 定</el-button>
+          <el-button type="primary" @click="addProject">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -86,9 +85,21 @@
             <el-button type="text" size="mini" @click="viewQRCode(scope)">二维码</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="state" label="项目状态">
+        <el-table-column prop="acceptanceOrderName" label="项目状态">
           <template slot-scope="scope">
-            <span :class="formatState(scope.row.state,'class')">{{formatState(scope.row.state)}}</span>
+            <span
+              :class="formatState(scope.row.acceptanceOrderName,'class')"
+            >{{formatState(scope.row.acceptanceOrderName)}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="验收单">
+          <template slot-scope="scope" v-if="scope.row.acceptanceOrderName !== ''">
+            <el-button type="text" size="mini" @click="viewOrder(scope)">查看</el-button>
+            <el-button
+              type="text"
+              size="mini"
+              @click="updateAcceptanceVisible = true;_id = scope.row._id"
+            >修改</el-button>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="210">
@@ -97,8 +108,8 @@
               type="success"
               plain
               size="mini"
-              @click="changeState(scope)"
-              :disabled="judgePurview || scope.row.state === 1 "
+              @click="acceptanceVisible = true;_id = scope.row._id"
+              :disabled="judgePurview || scope.row.acceptanceOrderName !== ''"
             >验收</el-button>
             <el-button
               type="primary"
@@ -135,7 +146,7 @@
       <div id="qrcode" ref="qrcode"></div>
     </el-dialog>
     <!-- 修改 -->
-    <el-dialog title="修改项目规格" :visible.sync="dialogUpdateFormVisible" width="570px">
+    <el-dialog title="修改项目" :visible.sync="dialogUpdateFormVisible" width="570px">
       <el-form :model="updateForm" :rules="updateRules" ref="updateRuleForm">
         <el-form-item label="项目名称：" :label-width="formLabelWidth" prop="projectName">
           <el-input v-model="updateForm.projectName" autocomplete="off" style="width:360px;"></el-input>
@@ -150,7 +161,6 @@
         </el-form-item>
         <el-form-item label="更新PDF：" :label-width="formLabelWidth">
           <el-upload
-            class="upload-demo"
             drag
             accept=".pdf, .PDF"
             :action="requestUrl + '/upload'"
@@ -169,7 +179,64 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogUpdateFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="updateSpecification">确 定</el-button>
+        <el-button type="primary" @click="updateProject">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 上传验收单 -->
+    <el-dialog title="验收项目" :visible.sync="acceptanceVisible" width="570px" @close="closeDialog">
+      <el-form>
+        <el-form-item label="上传验收单：" :label-width="formLabelWidth">
+          <el-upload
+            drag
+            accept=".png, .PNG, .jpg, .JPG"
+            :action="requestUrl + '/upload'"
+            :on-success="uploadAcceptanceOrder"
+            multiple
+            :limit="limit"
+            ref="elUploadOrder"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              将文件拖到此处，或
+              <em>点击上传</em>
+            </div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="acceptanceVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateAcceptanceOrder">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 修改验收单 -->
+    <el-dialog
+      title="验收项目"
+      :visible.sync="updateAcceptanceVisible"
+      width="570px"
+      @close="closeDialog"
+    >
+      <el-form>
+        <el-form-item label="更新验收单：" :label-width="formLabelWidth">
+          <el-upload
+            drag
+            accept=".png, .PNG, .jpg, .JPG"
+            :action="requestUrl + '/upload'"
+            :on-success="uploadAcceptanceOrder"
+            multiple
+            :limit="limit"
+            ref="elUpdateOrder"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              将文件拖到此处，或
+              <em>点击上传</em>
+            </div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="updateAcceptanceVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateAcceptanceOrder">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -181,10 +248,10 @@ import { requestUrl } from "@/default";
 import { Message } from "element-ui";
 import { getFormatTime, intervalTime, transformTimestamp } from "@/utils/time";
 import {
-  postSpecification,
-  getSpecification,
-  deleteSpecification,
-  putSpecification
+  postProject,
+  getProject,
+  deleteProject,
+  putProject
 } from "@/utils/api";
 let flag = false;
 export default {
@@ -218,12 +285,16 @@ export default {
     return {
       dialogFormVisible: false,
       dialogUpdateFormVisible: false,
+      acceptanceVisible: false,
+      updateAcceptanceVisible: false,
+      _id: "",
       form: {
         projectName: "",
         pdfName: "",
         end_time: "",
-        state: 0
+        acceptanceOrderName: ""
       },
+      acceptanceOrderName: "",
       updateForm: {
         projectName: "",
         pdfName: "",
@@ -260,6 +331,10 @@ export default {
     }
   },
   methods: {
+    viewOrder(data) {
+      window.open(`${requestUrl}/upload/${data.row.acceptanceOrderName}`);
+    },
+    updateOrder() {},
     formatTime(time) {
       return parseInt(intervalTime(time).day);
     },
@@ -282,16 +357,16 @@ export default {
       }
       return str;
     },
-    formatState(state, type) {
+    formatState(fileName, type) {
       let str;
       if (type) {
-        if (state === 1) {
+        if (fileName) {
           str = "success";
         } else {
           str = "warning";
         }
       } else {
-        if (state === 1) {
+        if (fileName) {
           str = "已验收";
         } else {
           str = "待验收";
@@ -303,29 +378,29 @@ export default {
       this.pagination.rows = parseInt(val);
       this.pagination.currentPage = 1;
       let { currentPage, rows } = this.pagination;
-      this.getSpecificationData({ currentPage, rows });
+      this.getProjectData({ currentPage, rows });
     },
     handleCurrentChange(val) {
       this.pagination.currentPage = parseInt(val);
       let { currentPage, rows } = this.pagination;
-      this.getSpecificationData({ currentPage, rows });
+      this.getProjectData({ currentPage, rows });
     },
-    getSpecificationData(pagination = {}) {
+    getProjectData(pagination = {}) {
       if (flag) {
         return;
       }
       flag = true;
-      getSpecification(pagination).then(data => {
+      getProject(pagination).then(data => {
         flag = false;
         this.tableData = data.data;
         this.pagination = data.pagination;
       });
     },
-    addSpecification() {
+    addProject() {
       if (flag) {
         return;
       }
-      let { projectName, pdfName, end_time, state } = this.form,
+      let { projectName, pdfName, end_time, acceptanceOrderName } = this.form,
         { ruleForm, elUpload } = this.$refs;
       end_time = getFormatTime(end_time);
       ruleForm.validate(valid => {
@@ -339,18 +414,18 @@ export default {
             return;
           }
           flag = true;
-          postSpecification({
+          postProject({
             projectName,
             pdfName,
             end_time,
-            state
+            acceptanceOrderName
           }).then(data => {
             flag = false;
             let type;
             if (data.status === 1) {
               type = "success";
               this.dialogFormVisible = false;
-              this.getSpecificationData();
+              this.getProjectData();
               ruleForm.resetFields();
               elUpload.clearFiles();
               this.form.pdfName = "";
@@ -374,6 +449,11 @@ export default {
     updateUploadSuccess(response) {
       if (response.status === 1) {
         this.updateForm.pdfName = response.filename;
+      }
+    },
+    uploadAcceptanceOrder(response) {
+      if (response.status === 1) {
+        this.acceptanceOrderName = response.filename;
       }
     },
     viewPDF(data) {
@@ -405,7 +485,7 @@ export default {
       })
         .then(() => {
           flag = true;
-          deleteSpecification(item.row._id).then(data => {
+          deleteProject(item.row._id).then(data => {
             flag = false;
             let type;
             if (data.status === 1) {
@@ -433,7 +513,7 @@ export default {
       this.dataItemInfo.id = data.row._id;
       this.dataItemInfo.$index = data.$index;
     },
-    updateSpecification() {
+    updateProject() {
       if (flag) {
         return;
       }
@@ -441,9 +521,11 @@ export default {
       updateRuleForm.validate(valid => {
         if (valid) {
           let { projectName, pdfName, end_time } = this.updateForm;
-          end_time = getFormatTime(end_time);
+          if (typeof end_time !== "string") {
+            end_time = getFormatTime(end_time);
+          }
           flag = true;
-          putSpecification(this.dataItemInfo.id, {
+          putProject(this.dataItemInfo.id, {
             projectName,
             pdfName,
             end_time
@@ -452,7 +534,7 @@ export default {
             let type;
             if (data.status === 1) {
               type = "success";
-              this.getSpecificationData();
+              this.getProjectData();
               this.dialogUpdateFormVisible = false;
               elUploadUpdate.clearFiles();
             } else {
@@ -467,41 +549,50 @@ export default {
         }
       });
     },
-    changeState(data) {
+    updateAcceptanceOrder() {
+      if (!this.acceptanceOrderName) {
+        this.$message({
+          message: "请上传验收单",
+          type: "error",
+          center: true
+        });
+        return;
+      }
       if (flag) {
         return;
       }
-      this.$confirm("是否确定验收?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          flag = true;
-          putSpecification(data.row._id, {
-            state: 1
-          }).then(data => {
-            flag = false;
-            let type;
-            if (data.status === 1) {
-              type = "success";
-              this.getSpecificationData();
-              this.dialogUpdateFormVisible = false;
-            } else {
-              type = "error";
-            }
-            this.$message({
-              message: data.message,
-              type,
-              center: true
-            });
-          });
-        })
-        .catch(() => {
-          return;
+      flag = true;
+      putProject(this._id, {
+        acceptanceOrderName: this.acceptanceOrderName
+      }).then(data => {
+        flag = false;
+        let type;
+        if (data.status === 1) {
+          type = "success";
+          this.acceptanceVisible = false;
+          this.updateAcceptanceVisible = false;
+          this.getProjectData();
+        } else {
+          type = "error";
+        }
+        this.$message({
+          message: data.message,
+          type,
+          center: true
         });
+      });
     },
-    searchSpecification() {
+    closeDialog() {
+      let { elUploadOrder, elUpdateOrder } = this.$refs;
+      if (elUploadOrder) {
+        elUploadOrder.clearFiles();
+      }
+      if (elUpdateOrder) {
+        elUpdateOrder.clearFiles();
+      }
+      this.acceptanceOrderName = "";
+    },
+    searchProject() {
       let { search } = this,
         { rows, currentPage } = this.pagination,
         searchObj = {};
@@ -511,11 +602,11 @@ export default {
       if (search.state) {
         searchObj.state = search.state;
       }
-      this.getSpecificationData({ searchObj, rows, currentPage });
+      this.getProjectData({ searchObj, rows, currentPage });
     }
   },
   created() {
-    this.getSpecificationData();
+    this.getProjectData();
   },
   components: {
     QRCode
