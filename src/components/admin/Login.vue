@@ -31,7 +31,6 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')" class="login-btn">提交</el-button>
-            <el-button type="info" @click="guestLogin">来宾入口</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -143,7 +142,7 @@ export default {
 }
 
 .login-btn {
-  margin-left: 40px;
+  margin-left: 92px;
 }
 
 .login-title {
