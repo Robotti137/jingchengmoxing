@@ -10,19 +10,13 @@
         style="height:40px;"
       >新增项目</el-button>
       <!-- 搜索 -->
-      <!-- <el-input placeholder="请输入内容" v-model="value" class="input-with-select">
-        <el-select v-model="key" slot="prepend" placeholder="选择搜索">
-          <el-option label="选择搜索" value></el-option>
-          <el-option label="项目名" value="projectName"></el-option>
-        </el-select>
-        <el-button slot="append" icon="el-icon-search" @click="searchSpecification"></el-button>
-      </el-input>-->
       <el-form :inline="true" :model="search" style="margin-left:40px;">
         <el-form-item label="项目名称">
-          <el-input v-model="search.projectName" placeholder="项目名称"></el-input>
+          <el-input v-model="search.projectName" placeholder="项目名称" v-on:keyup.enter="searchSpecification"></el-input>
         </el-form-item>
         <el-form-item label="项目状态">
           <el-select v-model="search.state" placeholder="项目状态">
+            <el-option label="全部" value=""></el-option>
             <el-option label="未验收" value="0"></el-option>
             <el-option label="已验收" value="1"></el-option>
           </el-select>
@@ -71,7 +65,7 @@
       </el-dialog>
     </div>
     <div style="margin-top:20px;">
-      <!-- 表格 -->
+      <!-- 列表 -->
       <el-table :data="tableData" style="width:100%;">
         <el-table-column prop="create_time" label="创建时间" sortable width="200"></el-table-column>
         <el-table-column prop="end_time" label="验收剩余天数" width="200">
