@@ -393,7 +393,7 @@ export default {
         });
       });
     },
-    removeItem(data) {
+    removeItem(item) {
       if (flag) {
         return;
       }
@@ -404,12 +404,12 @@ export default {
       })
         .then(() => {
           flag = true;
-          deleteSpecification(data.row._id).then(data => {
+          deleteSpecification(item.row._id).then(data => {
             flag = false;
             let type;
             if (data.status === 1) {
               type = "success";
-              this.tableData.splice(data.$index, 1);
+              this.tableData.splice(item.$index, 1);
             } else {
               type = "error";
             }
