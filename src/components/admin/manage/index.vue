@@ -10,16 +10,15 @@
     <el-container>
       <el-aside width="200px">
         <el-menu
-          background-color="#99CCCC"
+          background-color="#303133"
           text-color="#FFFFFF"
-          active-text-color="#336699"
-          style="border:none;"
-          default-active="/admin/manage/specification"
+          active-text-color="#ffd04b"
+          :default-active="$route.path"
           router
         >
-          <el-menu-item index="/admin/manage/specification">项目管理</el-menu-item>
-          <el-menu-item index="/admin/manage">项目维护</el-menu-item>
-          <el-menu-item index="/admin/manage">远程服务平台</el-menu-item>
+          <el-menu-item index="/admin/manage/project">项目管理</el-menu-item>
+          <el-menu-item index="/admin/manage/maintain">项目维护</el-menu-item>
+          <el-menu-item index="/admin/manage/remote">远程服务平台</el-menu-item>
         </el-menu>
       </el-aside>
       <el-main>
@@ -56,11 +55,11 @@ export default {
   font-size: 20px;
   font-weight: bold;
   color: #ffffff;
-  background-color: #99ccff;
+  background-color: #409eff;
 }
 
 .el-aside {
-  background-color: #99cccc;
+  background-color: #303133;
   color: #333;
   text-align: center;
   height: 100%;
