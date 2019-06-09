@@ -62,7 +62,6 @@ export default {
   background-color: #303133;
   color: #333;
   text-align: center;
-  height: 100%;
 }
 
 .el-main {

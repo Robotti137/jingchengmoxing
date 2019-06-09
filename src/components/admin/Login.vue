@@ -124,7 +124,7 @@ export default {
 .login-background {
   height: 100%;
   background: url("../../assets/img/background_img1.png") no-repeat center top;
-  background-size: 100%;
+  background-size: 100% 100%;
 }
 
 .login-container {
