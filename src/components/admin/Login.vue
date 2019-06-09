@@ -1,6 +1,6 @@
 <template>
   <div class="login-background">
-    <div class="login-container">
+    <div class="login-container" @keyup.enter="submitForm('ruleForm')">
       <el-card class="box-card" shadow="always">
         <p class="login-title">
           <span>精诚模型项目后台管理系统</span>
@@ -19,7 +19,6 @@
               v-model="ruleForm.username"
               autocomplete="off"
               class="login-input"
-              v-on:keyup.enter="submitForm('ruleForm')"
             ></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
@@ -28,7 +27,6 @@
               v-model="ruleForm.password"
               autocomplete="off"
               class="login-input"
-              v-on:keyup.enter="submitForm('ruleForm')"
             ></el-input>
           </el-form-item>
           <el-form-item>

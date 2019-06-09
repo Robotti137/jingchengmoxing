@@ -12,11 +12,15 @@
       <!-- 搜索 -->
       <el-form :inline="true" :model="search" style="margin-left:40px;">
         <el-form-item label="项目名称">
-          <el-input v-model="search.projectName" placeholder="项目名称" v-on:keyup.enter="searchSpecification"></el-input>
+          <el-input
+            v-model="search.projectName"
+            placeholder="项目名称"
+            @keyup.enter.native="searchSpecification"
+          ></el-input>
         </el-form-item>
         <el-form-item label="项目状态">
           <el-select v-model="search.state" placeholder="项目状态">
-            <el-option label="全部" value=""></el-option>
+            <el-option label="全部" value></el-option>
             <el-option label="未验收" value="0"></el-option>
             <el-option label="已验收" value="1"></el-option>
           </el-select>
