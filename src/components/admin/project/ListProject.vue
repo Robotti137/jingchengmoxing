@@ -18,6 +18,18 @@
           <el-button type="text" size="mini" @click="viewQRCode(scope.row.pdfName)">二维码</el-button>
         </template>
       </el-table-column>
+      <el-table-column label="公司验收单" width="180">
+        <template slot-scope="scope">
+          <el-button type="text" size="mini" @click="viewPDF(scope.row.pdfName)">查看</el-button>
+          <el-button type="text" size="mini" @click="viewQRCode(scope.row.pdfName)">修改</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户验收单" width="180">
+        <template slot-scope="scope">
+          <el-button type="text" size="mini" @click="viewPDF(scope.row.pdfName)">查看</el-button>
+          <el-button type="text" size="mini" @click="viewQRCode(scope.row.pdfName)">二维码</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="success" plain size="mini">验收</el-button>
@@ -36,9 +48,9 @@
 <script>
 import QRCode from "qrcodejs2";
 import { deleteProject } from "@/utils/api";
-import { createNamespacedHelpers } from "vuex";
 import { requestUrl } from "@/default";
 import { getFormatTime, intervalTime, transformTimestamp } from "@/utils/time";
+import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
   "projectModule"
 );

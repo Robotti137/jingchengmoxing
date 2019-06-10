@@ -11,18 +11,26 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from "vuex";
+const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
+  "projectModule"
+);
 export default {
+  computed: {
+    ...mapState(["pagination"])
+  },
   methods: {
+    ...mapActions(["getProjectList"]),
     handleSizeChange(val) {
       this.pagination.rows = parseInt(val);
       this.pagination.currentPage = 1;
       let { currentPage, rows } = this.pagination;
-      this.getProjectData({ currentPage, rows });
+      this.getProjectList({ currentPage, rows });
     },
     handleCurrentChange(val) {
       this.pagination.currentPage = parseInt(val);
       let { currentPage, rows } = this.pagination;
-      this.getProjectData({ currentPage, rows });
+      this.getProjectList({ currentPage, rows });
     }
   }
 };
