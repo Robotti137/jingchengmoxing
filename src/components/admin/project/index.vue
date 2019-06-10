@@ -34,6 +34,9 @@
           <el-form-item label="项目名称：" :label-width="formLabelWidth" prop="projectName">
             <el-input v-model="form.projectName" autocomplete="off" style="width:360px;"></el-input>
           </el-form-item>
+          <el-form-item label="业务员：" :label-width="formLabelWidth" prop="salesman">
+            <el-input v-model="form.salesman" autocomplete="off" style="width:360px;"></el-input>
+          </el-form-item>
           <el-form-item label="验收时间：" :label-width="formLabelWidth" prop="end_time">
             <el-date-picker
               v-model="form.end_time"
@@ -292,7 +295,9 @@ export default {
         projectName: "",
         pdfName: "",
         end_time: "",
-        acceptanceOrderName: ""
+        salesman: "",
+        companyAcceptanceOrder: "",
+        clientAcceptanceOrder: ""
       },
       acceptanceOrderName: "",
       updateForm: {
