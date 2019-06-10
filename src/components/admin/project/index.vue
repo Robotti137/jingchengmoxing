@@ -342,7 +342,7 @@ export default {
     dayState(day, type) {
       let str = "";
       if (type === "class") {
-        if (day <= 7 && day > 0) {
+        if (day <= 10 && day > 0) {
           str = "warning";
         } else if (day <= 0) {
           str = "error";
@@ -350,8 +350,6 @@ export default {
       } else {
         if (day === 0) {
           str = "今天验收";
-        } else if (day <= 0) {
-          str = "已超时";
         } else {
           str = `${day}天`;
         }
