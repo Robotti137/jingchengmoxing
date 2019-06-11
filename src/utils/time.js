@@ -1,11 +1,9 @@
 let getFormatTime = (time) => {
     let date = time || new Date();
     let seperator1 = "-";
-    let seperator2 = ":";
     let month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
     let strDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    let currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
-        + " " + date.getHours() + seperator2 + date.getMinutes();
+    let currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
     return currentdate;
 }
 

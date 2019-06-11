@@ -6,6 +6,7 @@ import Manage from '../components/admin/manage'
 import Project from '../components/admin/project'
 import Maintain from '../components/admin/maintain'
 import Remote from '../components/admin/remote'
+// import Record from "../components/admin/record"
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,10 @@ let router = new VueRouter({
                     path: '/admin/manage/remote',
                     component: Remote,
                 }
+                // {
+                //     path: '/admin/manage/record',
+                //     component: Record,
+                // }
             ]
         }
     ]

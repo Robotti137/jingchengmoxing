@@ -105,14 +105,14 @@ export default {
           });
         }
       });
-    },
-    guestLogin() {
-      let guest = {
-        username: "来宾用户"
-      };
-      sessionStorage.setItem("jcmx-userinfo", JSON.stringify(guest));
-      this.$router.replace("/admin/manage");
     }
+    // guestLogin() {
+    //   let guest = {
+    //     username: "来宾用户"
+    //   };
+    //   sessionStorage.setItem("jcmx-userinfo", JSON.stringify(guest));
+    //   this.$router.replace("/admin/manage");
+    // }
   },
   components: {
     Message
@@ -143,7 +143,7 @@ export default {
 }
 
 .login-btn {
-  margin-left: 40px;
+  margin-left: 80px;
 }
 
 .login-title {
