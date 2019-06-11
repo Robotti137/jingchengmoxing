@@ -31,7 +31,6 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')" class="login-btn">提交</el-button>
-            <el-button type="info" @click="guestLogin" style="margin-left:7px">来宾入口</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -106,13 +105,6 @@ export default {
         }
       });
     }
-    // guestLogin() {
-    //   let guest = {
-    //     username: "来宾用户"
-    //   };
-    //   sessionStorage.setItem("jcmx-userinfo", JSON.stringify(guest));
-    //   this.$router.replace("/admin/manage");
-    // }
   },
   components: {
     Message
