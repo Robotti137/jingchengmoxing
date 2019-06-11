@@ -1,6 +1,6 @@
 <template>
   <!-- 修改弹框 -->
-  <el-dialog title="新增项目" :visible.sync="updateProjectVisible" width="570px">
+  <el-dialog title="修改项目" :visible.sync="updateProjectVisible" width="570px">
     <el-form
       :model="updateProjectInfo"
       :rules="updateProjectRules"
@@ -21,7 +21,7 @@
           style="width:360px;"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="PDF上传：" :label-width="labelWidth">
+      <el-form-item label="修改PDF：" :label-width="labelWidth">
         <el-upload
           drag
           accept=".pdf, .PDF"

@@ -97,7 +97,8 @@ export default {
         end_time: "",
         pdfName: "",
         companyAcceptanceOrder: "",
-        clientAcceptanceOrder: ""
+        clientAcceptanceOrder: "",
+        state: 0
       },
       addProjectRules: {
         projectName: [{ validator: validProjectName, trigger: "blur" }],
