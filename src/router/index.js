@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 import Login from '../components/admin/Login'
 import Manage from '../components/admin/manage'
-import Project from '../components/admin/project/test.vue'
+import Project from '../components/admin/project'
 import Maintain from '../components/admin/maintain'
 import Remote from '../components/admin/remote'
 // import Record from "../components/admin/record"
