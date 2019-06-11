@@ -6,7 +6,10 @@ export default {
         pagination: {},
         updateProjectVisible: false,
         updateProjectInfo: {},
-        _id: ""
+        _id: "",
+        search: {},
+        rows: 10,
+        currentPage: 1
     },
     mutations: {
         setProject(state, value) {
@@ -23,12 +26,31 @@ export default {
         },
         set_id(state, value) {
             state._id = value;
+        },
+        setSearch(state, value) {
+            state.search = value;
+        },
+        setCurrentPage(state, value) {
+            state.currentPage = value;
+        },
+        setRows(state, value) {
+            state.rows = value;
         }
     },
     actions: {
         getProjectList({
             commit
-        }, sendData) {
+        }) {
+            let {
+                currentPage,
+                rows,
+                search
+            } = this.state.projectModule;
+            let sendData = {
+                rows,
+                currentPage,
+                search
+            };
             getProject(sendData).then(data => {
                 if (data.status === 1) {
                     commit("setProject", data.data);

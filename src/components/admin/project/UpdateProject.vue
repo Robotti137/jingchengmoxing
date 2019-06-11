@@ -133,7 +133,7 @@ export default {
           ...updateProjectInfo
         };
         if (typeof sendDate.end_time !== "string") {
-          sendDate.end_time = getFormatTime(projectInfo.end_time);
+          sendDate.end_time = getFormatTime(updateProjectInfo.end_time);
         }
         flag = true;
         putProject(this._id, sendDate).then(data => {

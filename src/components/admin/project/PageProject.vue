@@ -21,16 +21,15 @@ export default {
   },
   methods: {
     ...mapActions(["getProjectList"]),
+    ...mapMutations(["setCurrentPage", "setRows"]),
     handleSizeChange(val) {
-      this.pagination.rows = parseInt(val);
-      this.pagination.currentPage = 1;
-      let { currentPage, rows } = this.pagination;
-      this.getProjectList({ currentPage, rows });
+      this.setRows(val);
+      this.setCurrentPage(1);
+      this.getProjectList();
     },
     handleCurrentChange(val) {
-      this.pagination.currentPage = parseInt(val);
-      let { currentPage, rows } = this.pagination;
-      this.getProjectList({ currentPage, rows });
+      this.setCurrentPage(val);
+      this.getProjectList();
     }
   }
 };

@@ -7,8 +7,10 @@
       <el-table-column label="剩余验收天数" width="180" align="center">
         <template slot-scope="scope">
           <span
+            v-if="scope.row.state === 0"
             :class="dayState(formatTime(scope.row.end_time),'class')"
           >{{dayState(formatTime(scope.row.end_time),'')}}</span>
+          <span v-else class="success">已验收</span>
         </template>
       </el-table-column>
       <el-table-column prop="salesman" label="业务员" width="100" align="center"></el-table-column>
@@ -77,11 +79,22 @@
             plain
             size="mini"
             @click="acceptance(scope.row)"
-            v-if="scope.row.state === 0"
+            :disabled="scope.row.state === 1"
           >验收</el-button>
-          <el-button type="success" plain size="mini" v-else disabled>已验收</el-button>
-          <el-button type="primary" plain size="mini" @click="updateProject(scope.row)">修改</el-button>
-          <el-button type="danger" plain size="mini" @click="removeProject(scope.row._id)">删除</el-button>
+          <el-button
+            type="primary"
+            plain
+            size="mini"
+            @click="updateProject(scope.row)"
+            :disabled="judgePurview"
+          >修改</el-button>
+          <el-button
+            type="danger"
+            plain
+            size="mini"
+            @click="removeProject(scope.row._id)"
+            :disabled="judgePurview"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -148,6 +161,7 @@
 import QRCode from "qrcodejs2";
 import { deleteProject, putProject } from "@/utils/api";
 import { requestUrl } from "@/default";
+import { judgePurview } from "@/utils/util";
 import { getFormatTime, intervalTime, transformTimestamp } from "@/utils/time";
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
@@ -170,7 +184,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(["project"])
+    ...mapState(["project"]),
+    judgePurview
   },
   methods: {
     ...mapMutations([

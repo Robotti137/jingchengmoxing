@@ -6,6 +6,7 @@
       type="primary"
       @click="addProjectVisible = true"
       style="height:40px;"
+      :disabled="judgePurview"
     >新增项目</el-button>
     <!-- 新增弹框 -->
     <el-dialog title="新增项目" :visible.sync="addProjectVisible" width="570px">
@@ -53,6 +54,7 @@
 
 <script>
 import { requestUrl } from "@/default";
+import { judgePurview } from "@/utils/util";
 import { getFormatTime, transformTimestamp } from "@/utils/time";
 import { postProject } from "@/utils/api";
 import { createNamespacedHelpers } from "vuex";
@@ -106,6 +108,9 @@ export default {
         end_time: [{ validator: validEndTime, trigger: "blur" }]
       }
     };
+  },
+  computed: {
+    judgePurview
   },
   methods: {
     ...mapActions(["getProjectList"]),
