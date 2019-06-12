@@ -34,7 +34,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["setSearch"]),
+    ...mapMutations(["setSearch", "setCurrentPage"]),
     ...mapActions(["getProjectList"]),
     searchProject() {
       let { projectName, salesman, state } = this,
@@ -49,6 +49,7 @@ export default {
         search.salesman = salesman;
       }
       this.setSearch(search);
+      this.setCurrentPage(1);
       this.getProjectList();
     }
   }
