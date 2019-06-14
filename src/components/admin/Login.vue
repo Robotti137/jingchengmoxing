@@ -41,7 +41,6 @@
 <script>
 import { userByLogin } from "@/utils/api";
 import { usernameReg } from "@/utils/reg";
-import { Message } from "element-ui";
 import { setTimeout } from "timers";
 export default {
   data() {
@@ -105,16 +104,6 @@ export default {
         }
       });
     }
-    // guestLogin() {
-    //   let guest = {
-    //     username: "来宾用户"
-    //   };
-    //   sessionStorage.setItem("jcmx-userinfo", JSON.stringify(guest));
-    //   this.$router.replace("/admin/manage");
-    // }
-  },
-  components: {
-    Message
   }
 };
 </script>

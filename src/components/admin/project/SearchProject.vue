@@ -22,9 +22,7 @@
 
 <script>
 import { createNamespacedHelpers } from "vuex";
-const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
-  "projectModule"
-);
+const { mapActions, mapMutations } = createNamespacedHelpers("projectModule");
 export default {
   data() {
     return {

@@ -1,5 +1,5 @@
 import { get, post, deletes, put } from './axios.js';//导入axios实例文件中方法
-import { requestUrl, addressQueryUrl, addressQueryParame } from '../default'
+import { requestUrl } from '../default'
 
 //用户登录
 export const userByLogin = (data) => {

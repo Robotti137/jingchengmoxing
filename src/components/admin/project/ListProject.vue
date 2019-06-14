@@ -162,7 +162,7 @@ import QRCode from "qrcodejs2";
 import { deleteProject, putProject } from "@/utils/api";
 import { requestUrl } from "@/default";
 import { judgePurview } from "@/utils/util";
-import { getFormatTime, intervalTime, transformTimestamp } from "@/utils/time";
+import { intervalTime } from "@/utils/time";
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
   "projectModule"
@@ -179,6 +179,7 @@ export default {
       qrcode: {},
       companyAcceptanceOrder: "",
       clientAcceptanceOrder: "",
+      // eslint-disable-next-line
       _id: "",
       order: ""
     };
@@ -391,12 +392,12 @@ export default {
     }
   },
   watch: {
-    companyAcceptanceOrderVisible(newValue, oldValue) {
+    companyAcceptanceOrderVisible(newValue) {
       if (!newValue) {
         this.reset();
       }
     },
-    ClientAcceptanceOrder(newValue, oldValue) {
+    ClientAcceptanceOrder(newValue) {
       if (!newValue) {
         this.reset();
       }
