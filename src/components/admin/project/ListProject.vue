@@ -59,7 +59,7 @@
             <el-button
               type="text"
               size="mini"
-              @click="viewOrder(scope.row.companyAcceptanceOrder)"
+              @click="viewOrder(scope.row.clientAcceptanceOrder)"
             >查看</el-button>
             <el-button
               type="text"
