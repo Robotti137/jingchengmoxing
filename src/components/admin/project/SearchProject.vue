@@ -1,6 +1,6 @@
 <template>
   <!-- 搜索 -->
-  <el-form :inline="true" style="margin-left:20px;">
+  <el-form :inline="true" style="margin-left:20px;min-width:720px;">
     <el-form-item label="项目名称">
       <el-input v-model="projectName" placeholder="项目名称" @keyup.enter.native="searchProject"></el-input>
     </el-form-item>
@@ -22,9 +22,7 @@
 
 <script>
 import { createNamespacedHelpers } from "vuex";
-const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
-  "projectModule"
-);
+const { mapActions, mapMutations } = createNamespacedHelpers("projectModule");
 export default {
   data() {
     return {

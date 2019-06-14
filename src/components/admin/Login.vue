@@ -41,7 +41,6 @@
 <script>
 import { userByLogin } from "@/utils/api";
 import { usernameReg } from "@/utils/reg";
-import { Message } from "element-ui";
 import { setTimeout } from "timers";
 export default {
   data() {
@@ -105,9 +104,6 @@ export default {
         }
       });
     }
-  },
-  components: {
-    Message
   }
 };
 </script>

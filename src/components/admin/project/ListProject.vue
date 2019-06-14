@@ -2,9 +2,9 @@
   <div>
     <!-- 列表 -->
     <el-table :data="project" stripe style="width: 100%">
-      <el-table-column prop="create_time" label="创建时间" width="180" align="center"></el-table-column>
-      <el-table-column prop="projectName" label="项目名" width="200" align="center"></el-table-column>
-      <el-table-column label="剩余验收天数" width="180" align="center">
+      <el-table-column prop="create_time" label="创建时间" align="center"></el-table-column>
+      <el-table-column prop="projectName" label="项目名" align="center"></el-table-column>
+      <el-table-column label="剩余验收天数" width="130" align="center">
         <template slot-scope="scope">
           <span
             v-if="scope.row.state === 0"
@@ -13,8 +13,8 @@
           <span v-else class="success">已验收</span>
         </template>
       </el-table-column>
-      <el-table-column prop="salesman" label="业务员" width="100" align="center"></el-table-column>
-      <el-table-column label="文档" width="130" align="center">
+      <el-table-column prop="salesman" label="业务员" align="center"></el-table-column>
+      <el-table-column label="文档" align="center">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="viewPDF(scope.row.pdfName)">查看</el-button>
           <el-button type="text" size="mini" @click="viewQRCode(scope.row.pdfName)">二维码</el-button>
@@ -72,7 +72,7 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="220" align="center">
+      <el-table-column label="操作" width="210" align="center">
         <template slot-scope="scope">
           <el-button
             type="success"
@@ -162,7 +162,7 @@ import QRCode from "qrcodejs2";
 import { deleteProject, putProject } from "@/utils/api";
 import { requestUrl } from "@/default";
 import { judgePurview } from "@/utils/util";
-import { getFormatTime, intervalTime, transformTimestamp } from "@/utils/time";
+import { intervalTime } from "@/utils/time";
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
   "projectModule"
@@ -179,6 +179,7 @@ export default {
       qrcode: {},
       companyAcceptanceOrder: "",
       clientAcceptanceOrder: "",
+      // eslint-disable-next-line
       _id: "",
       order: ""
     };
@@ -391,12 +392,12 @@ export default {
     }
   },
   watch: {
-    companyAcceptanceOrderVisible(newValue, oldValue) {
+    companyAcceptanceOrderVisible(newValue) {
       if (!newValue) {
         this.reset();
       }
     },
-    ClientAcceptanceOrder(newValue, oldValue) {
+    ClientAcceptanceOrder(newValue) {
       if (!newValue) {
         this.reset();
       }
