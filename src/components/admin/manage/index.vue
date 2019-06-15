@@ -17,9 +17,9 @@
           router
         >
           <el-menu-item index="/admin/manage/project">项目管理</el-menu-item>
+          <el-menu-item index="/admin/manage/application">立项申请</el-menu-item>
           <el-menu-item index="/admin/manage/maintain">项目维护</el-menu-item>
           <el-menu-item index="/admin/manage/remote">远程服务平台</el-menu-item>
-          <!-- <el-menu-item index="/admin/manage/record">登录历史</el-menu-item> -->
         </el-menu>
       </el-aside>
       <el-main>
