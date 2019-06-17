@@ -84,6 +84,9 @@ export default {
                 username: data.username,
                 purview: data.purview
               };
+              if (data.approvePurview) {
+                userinfo.approvePurview = data.approvePurview;
+              }
               sessionStorage.setItem("jcmx-userinfo", JSON.stringify(userinfo));
               this.$message({
                 message: "登陆成功",

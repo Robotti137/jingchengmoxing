@@ -25,3 +25,28 @@ export const deleteProject = (id) => {
 export const putProject = (id, data) => {
     return put(`${requestUrl}/project/${id}`, data);
 }
+
+//增加立项申请
+export const postApplication = (data) => {
+    return post(`${requestUrl}/application`, data);
+}
+
+//获取立项申请
+export const getApplication = (data) => {
+    return get(`${requestUrl}/application`, data);
+}
+
+//获取立项申请
+export const deleteApplication = (id) => {
+    return deletes(`${requestUrl}/application/${id}`);
+}
+
+//修改立项申请
+export const putApplication = (id, data) => {
+    return put(`${requestUrl}/application/${id}`, data);
+}
+
+//立项申请签字
+export const postSignature = (data) => {
+    return post(`${requestUrl}/application/signature`, data);
+}
