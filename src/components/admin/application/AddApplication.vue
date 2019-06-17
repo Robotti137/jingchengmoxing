@@ -141,6 +141,8 @@
 <script>
 import { postApplication } from "@/utils/api";
 import { getFormatTime } from "@/utils/time";
+import { createNamespacedHelpers } from "vuex";
+const { mapActions } = createNamespacedHelpers("applicationModule");
 let flag = false;
 export default {
   data() {
@@ -187,6 +189,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["getApplicationList"]),
     submit() {
       if (flag) {
         return;
@@ -210,6 +213,7 @@ export default {
           if (data.status === 1) {
             type = "success";
             this.reset();
+            this.getApplicationList();
             this.addApplicationVisible = false;
           } else {
             type = "error";
