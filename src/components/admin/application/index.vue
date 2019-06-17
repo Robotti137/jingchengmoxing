@@ -26,7 +26,6 @@ import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
   "applicationModule"
 );
-import { getApplication } from "@/utils/api";
 export default {
   data() {
     return {
