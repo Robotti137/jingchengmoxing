@@ -22,54 +22,38 @@
       </el-table-column>
       <el-table-column label="公司验收单" width="130" align="center">
         <template slot-scope="scope">
-          <template v-if="scope.row.companyAcceptanceOrder === ''">
-            <el-button
-              type="text"
-              size="mini"
-              @click="companyAcceptanceOrderVisible = true;_id = scope.row._id"
-            >上传</el-button>
-          </template>
-          <template v-else>
-            <el-button
-              type="text"
-              size="mini"
-              @click="viewOrder(scope.row.companyAcceptanceOrder)"
-            >查看</el-button>
-            <el-button
-              type="text"
-              size="mini"
-              @click="companyAcceptanceOrderVisible = true;
+          <el-button
+            v-if="isHaveOrder(scope.row.companyAcceptanceOrder)"
+            type="text"
+            size="mini"
+            @click="companyAcceptanceOrderVisible = true;_id = scope.row._id"
+          >上传</el-button>
+          <el-button
+            v-else
+            type="text"
+            size="mini"
+            @click="companyAcceptanceOrderVisible = true;
               _id = scope.row._id;
-              companyAcceptanceOrder = scope.row.companyAcceptanceOrder;
-              order = scope.row.companyAcceptanceOrder"
-            >修改</el-button>
-          </template>
+              companyAcceptanceOrder = scope.row.companyAcceptanceOrder"
+          >修改</el-button>
         </template>
       </el-table-column>
       <el-table-column label="客户验收单" width="130" align="center">
         <template slot-scope="scope">
-          <template v-if="scope.row.clientAcceptanceOrder === ''">
-            <el-button
-              type="text"
-              size="mini"
-              @click="clientAcceptanceOrderVisible = true;_id = scope.row._id"
-            >上传</el-button>
-          </template>
-          <template v-else>
-            <el-button
-              type="text"
-              size="mini"
-              @click="viewOrder(scope.row.companyAcceptanceOrder)"
-            >查看</el-button>
-            <el-button
-              type="text"
-              size="mini"
-              @click="clientAcceptanceOrderVisible = true;
+          <el-button
+            v-if="isHaveOrder(scope.row.clientAcceptanceOrder)"
+            type="text"
+            size="mini"
+            @click="clientAcceptanceOrderVisible = true;_id = scope.row._id"
+          >上传</el-button>
+          <el-button
+            v-else
+            type="text"
+            size="mini"
+            @click="clientAcceptanceOrderVisible = true;
               _id = scope.row._id;
-              clientAcceptanceOrder = scope.row.clientAcceptanceOrder;
-              order = scope.row.clientAcceptanceOrder"
-            >修改</el-button>
-          </template>
+              clientAcceptanceOrder = scope.row.clientAcceptanceOrder"
+          >修改</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="210" align="center">
@@ -103,25 +87,23 @@
       <div id="qrcode" ref="qrcode"></div>
     </el-dialog>
     <!-- 上传验公司验收单弹框 -->
-    <el-dialog title="上传公司验收单" :visible.sync="companyAcceptanceOrderVisible" width="570px">
+    <el-dialog title="上传公司验收单" :visible.sync="companyAcceptanceOrderVisible" width="690px">
       <el-form size="medium">
         <el-form-item label="验收单上传：" :label-width="labelWidth">
-          <el-upload
-            drag
-            accept=".jpg, .JPG, .png, .PNG"
-            :action="requestUrl + '/upload'"
-            multiple
-            :on-success="uploadCompanyAcceptanceOrder"
-            ref="uploadCompanyAcceptanceOrder"
-            :limit="1"
-          >
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">
-              将文件拖到此处，或
-              <em>点击上传</em>
-            </div>
-            <div class="el-upload__tip" slot="tip">png/jpg文件，且只能上传一个</div>
-          </el-upload>
+          <div style="display:flex;">
+            <el-upload
+              accept=".jpg, .JPG, .png, .PNG"
+              :action="requestUrl + '/upload'"
+              list-type="picture-card"
+              :file-list="companyAcceptanceOrder"
+              :on-preview="handlePictureCardPreview"
+              :on-success="uploadCompanyAcceptanceOrder"
+              :on-remove="removeCompanyAcceptanceOrder"
+              ref="uploadCompanyAcceptanceOrder"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+          </div>
         </el-form-item>
       </el-form>
       <div>
@@ -129,30 +111,31 @@
       </div>
     </el-dialog>
     <!-- 上传验客户验收单弹框 -->
-    <el-dialog title="上传客户验收单" :visible.sync="clientAcceptanceOrderVisible" width="570px">
+    <el-dialog title="上传客户验收单" :visible.sync="clientAcceptanceOrderVisible" width="690px">
       <el-form size="medium">
         <el-form-item label="验收单上传：" :label-width="labelWidth">
-          <el-upload
-            drag
-            accept=".jpg, .JPG, .png, .PNG"
-            :action="requestUrl + '/upload'"
-            multiple
-            :on-success="uploadClientAcceptanceOrder"
-            ref="uploadClientAcceptanceOrder"
-            :limit="1"
-          >
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">
-              将文件拖到此处，或
-              <em>点击上传</em>
-            </div>
-            <div class="el-upload__tip" slot="tip">png/jpg文件，且只能上传一个</div>
-          </el-upload>
+          <div style="display:flex;">
+            <el-upload
+              accept=".jpg, .JPG, .png, .PNG"
+              :action="requestUrl + '/upload'"
+              list-type="picture-card"
+              :file-list="clientAcceptanceOrder"
+              :on-preview="handlePictureCardPreview"
+              :on-success="uploadClientAcceptanceOrder"
+              :on-remove="removeClientAcceptanceOrder"
+              ref="uploadClientAcceptanceOrder"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+          </div>
         </el-form-item>
       </el-form>
       <div>
         <el-button type="primary" @click="submitClientAcceptanceOrder">确 定</el-button>
       </div>
+    </el-dialog>
+    <el-dialog :visible.sync="orderVisible">
+      <img width="100%" :src="orderImageUrl">
     </el-dialog>
   </div>
 </template>
@@ -177,11 +160,12 @@ export default {
       qrcodeVisible: false,
       labelWidth: "100px",
       qrcode: {},
-      companyAcceptanceOrder: "",
-      clientAcceptanceOrder: "",
+      companyAcceptanceOrder: [],
+      clientAcceptanceOrder: [],
       // eslint-disable-next-line
       _id: "",
-      order: ""
+      orderVisible: false,
+      orderImageUrl: ""
     };
   },
   computed: {
@@ -195,11 +179,26 @@ export default {
       "set_id"
     ]),
     ...mapActions(["getProjectList"]),
+    handlePictureCardPreview(file) {
+      this.orderImageUrl = file.url;
+      this.orderVisible = true;
+    },
+    //判断验收单数组中是否有数据
+    isHaveOrder(arr) {
+      if (arr.length > 0) {
+        return false;
+      } else {
+        return true;
+      }
+    },
     acceptance(data) {
       if (flag) {
         return;
       }
-      if (!data.companyAcceptanceOrder || !data.clientAcceptanceOrder) {
+      if (
+        data.companyAcceptanceOrder.length <= 0 ||
+        data.clientAcceptanceOrder.length <= 0
+      ) {
         this.$message({
           showClose: true,
           message: "请上传，公司验收单/客户验收单，后再进行验收"
@@ -210,39 +209,36 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() => {
-        flag = true;
-        putProject(data._id, { state: 1 }).then(data => {
-          flag = false;
-          let type;
-          if (data.status === 1) {
-            type = "success";
-            this.getProjectList();
-          } else {
-            type = "error";
-          }
-          this.$message({
-            showClose: true,
-            message: data.message,
-            type
+      })
+        .then(() => {
+          flag = true;
+          putProject(data._id, { state: 1 }).then(data => {
+            flag = false;
+            let type;
+            if (data.status === 1) {
+              type = "success";
+              this.getProjectList();
+            } else {
+              type = "error";
+            }
+            this.$message({
+              showClose: true,
+              message: data.message,
+              type
+            });
+            this.reset();
+            this.clientAcceptanceOrderVisible = false;
           });
-          this.reset();
-          this.clientAcceptanceOrderVisible = false;
+        })
+        .catch(() => {
+          return;
         });
-      });
-    },
-    viewOrder(fileName) {
-      window.open(`${requestUrl}/upload/${fileName}`);
     },
     submitCompanyAcceptanceOrder() {
       if (flag) {
         return;
       }
-      let { _id, companyAcceptanceOrder, order } = this;
-      if (order === companyAcceptanceOrder) {
-        this.companyAcceptanceOrderVisible = false;
-        return;
-      }
+      let { _id, companyAcceptanceOrder } = this;
       flag = true;
       putProject(_id, { companyAcceptanceOrder }).then(data => {
         flag = false;
@@ -266,11 +262,7 @@ export default {
       if (flag) {
         return;
       }
-      let { _id, clientAcceptanceOrder, order } = this;
-      if (order === clientAcceptanceOrder) {
-        this.clientAcceptanceOrderVisible = false;
-        return;
-      }
+      let { _id, clientAcceptanceOrder } = this;
       flag = true;
       putProject(_id, { clientAcceptanceOrder }).then(data => {
         flag = false;
@@ -295,8 +287,8 @@ export default {
         uploadCompanyAcceptanceOrder,
         uploadClientAcceptanceOrder
       } = this.$refs;
-      this.companyAcceptanceOrder = "";
-      this.clientAcceptanceOrder = "";
+      this.companyAcceptanceOrder = [];
+      this.clientAcceptanceOrder = [];
       if (uploadCompanyAcceptanceOrder) {
         uploadCompanyAcceptanceOrder.clearFiles();
       }
@@ -304,18 +296,44 @@ export default {
         uploadClientAcceptanceOrder.clearFiles();
       }
     },
+
+    //上传公司验收单成功执行操作
     uploadCompanyAcceptanceOrder(response) {
-      //上传公司验收单
       if (response.status === 1) {
-        this.companyAcceptanceOrder = response.filename;
+        this.companyAcceptanceOrder.push({
+          name: response.filename,
+          url: `${requestUrl}/upload/${response.filename}`
+        });
       }
     },
+    //删除公司验收单后执行操作
+    removeCompanyAcceptanceOrder(file, fileList) {
+      this.companyAcceptanceOrder.forEach((item, index) => {
+        if (file.name === item.name) {
+          this.companyAcceptanceOrder.splice(index, 1);
+          return;
+        }
+      });
+    },
+    //上传用户验收单成功执行操作
     uploadClientAcceptanceOrder(response) {
-      //上传用户验收单
       if (response.status === 1) {
-        this.clientAcceptanceOrder = response.filename;
+        this.clientAcceptanceOrder.push({
+          name: response.filename,
+          url: `${requestUrl}/upload/${response.filename}`
+        });
       }
     },
+    //删除公司验收单后执行操作
+    removeClientAcceptanceOrder(file, fileList) {
+      this.clientAcceptanceOrder.forEach((item, index) => {
+        if (file.name === item.name) {
+          this.clientAcceptanceOrder.splice(index, 1);
+          return;
+        }
+      });
+    },
+
     formatTime(time) {
       return parseInt(intervalTime(time).day);
     },
@@ -338,9 +356,12 @@ export default {
       }
       return str;
     },
+
+    //查看PDF
     viewPDF(pdfName) {
       window.open(`${requestUrl}/PDF.html?fileName=${pdfName}`);
     },
+    //查看二维码
     viewQRCode(pdfName) {
       this.qrcodeVisible = true;
       this.$nextTick(function() {
@@ -352,6 +373,7 @@ export default {
         });
       });
     },
+    //删除项目
     removeProject(_id) {
       if (flag) {
         return;
@@ -433,5 +455,9 @@ export default {
 .el-form {
   padding-left: 8px;
   padding-right: 68px;
+}
+
+.el-upload {
+  display: block;
 }
 </style>
