@@ -307,7 +307,7 @@ export default {
       }
     },
     //删除公司验收单后执行操作
-    removeCompanyAcceptanceOrder(file, fileList) {
+    removeCompanyAcceptanceOrder(file) {
       this.companyAcceptanceOrder.forEach((item, index) => {
         if (file.name === item.name) {
           this.companyAcceptanceOrder.splice(index, 1);
@@ -325,7 +325,7 @@ export default {
       }
     },
     //删除公司验收单后执行操作
-    removeClientAcceptanceOrder(file, fileList) {
+    removeClientAcceptanceOrder(file) {
       this.clientAcceptanceOrder.forEach((item, index) => {
         if (file.name === item.name) {
           this.clientAcceptanceOrder.splice(index, 1);
