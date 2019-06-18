@@ -98,8 +98,8 @@ export default {
         salesman: "",
         end_time: "",
         pdfName: "",
-        companyAcceptanceOrder: "",
-        clientAcceptanceOrder: "",
+        companyAcceptanceOrder: [],
+        clientAcceptanceOrder: [],
         state: 0
       },
       addProjectRules: {
