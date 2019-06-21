@@ -8,7 +8,7 @@
       style="height:40px;"
     >立项申请</el-button>
     <!-- 新增弹框 -->
-    <el-dialog title="立项申请" :visible.sync="addApplicationVisible" width="570px">
+    <el-dialog title="立项申请" :visible.sync="addApplicationVisible" width="570px;">
       <el-form
         :model="applicationInfo"
         :rules="addApplicationRules"

@@ -1,20 +1,18 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Login from '../components/admin/Login'
-import Manage from '../components/admin/manage'
-import Project from '../components/admin/project'
-import Maintain from '../components/admin/maintain'
-import Remote from '../components/admin/remote'
-import Application from '../components/admin/application'
-// import Record from "../components/admin/record"
+const Login = () => import('../components/admin/Login')
+const Manage = () => import('../components/admin/manage')
+const Project = () => import('../components/admin/project')
+const Maintain = () => import('../components/admin/maintain')
+const Remote = () => import('../components/admin/remote')
+const Application = () => import('../components/admin/application')
 
 Vue.use(VueRouter)
 
 let router = new VueRouter({
     mode: 'history',
-    routes: [
-        {
+    routes: [{
             path: '/',
             component: Login
         },
@@ -29,8 +27,7 @@ let router = new VueRouter({
         {
             path: '/admin/manage',
             component: Manage,
-            children: [
-                {
+            children: [{
                     path: '/admin/manage/project',
                     component: Project,
                 },
@@ -60,7 +57,9 @@ router.beforeEach((to, from, next) => {
     next()
     let userinfo = JSON.parse(sessionStorage.getItem('jcmx-userinfo'))
     if (!userinfo) {
-        next({ path: '/admin/login' })
+        next({
+            path: '/admin/login'
+        })
     } else {
         next()
     }

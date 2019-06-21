@@ -35,7 +35,7 @@
             @click="companyAcceptanceOrderVisible = true;
               _id = scope.row._id;
               companyAcceptanceOrder = scope.row.companyAcceptanceOrder"
-          >修改</el-button>
+          >修改/查看</el-button>
         </template>
       </el-table-column>
       <el-table-column label="客户验收单" width="130" align="center">
@@ -53,7 +53,7 @@
             @click="clientAcceptanceOrderVisible = true;
               _id = scope.row._id;
               clientAcceptanceOrder = scope.row.clientAcceptanceOrder"
-          >修改</el-button>
+          >修改/查看</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="210" align="center">
@@ -307,7 +307,7 @@ export default {
       }
     },
     //删除公司验收单后执行操作
-    removeCompanyAcceptanceOrder(file, fileList) {
+    removeCompanyAcceptanceOrder(file) {
       this.companyAcceptanceOrder.forEach((item, index) => {
         if (file.name === item.name) {
           this.companyAcceptanceOrder.splice(index, 1);
@@ -325,7 +325,7 @@ export default {
       }
     },
     //删除公司验收单后执行操作
-    removeClientAcceptanceOrder(file, fileList) {
+    removeClientAcceptanceOrder(file) {
       this.clientAcceptanceOrder.forEach((item, index) => {
         if (file.name === item.name) {
           this.clientAcceptanceOrder.splice(index, 1);
