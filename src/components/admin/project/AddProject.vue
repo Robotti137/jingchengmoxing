@@ -136,8 +136,10 @@ export default {
           });
           return;
         }
+        let _user = JSON.parse(sessionStorage.getItem("jcmx-userinfo"))._id;
         let sendDate = {
           ...projectInfo,
+          _user,
           end_time: getFormatTime(projectInfo.end_time)
         };
         flag = true;

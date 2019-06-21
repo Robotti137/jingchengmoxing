@@ -51,12 +51,16 @@ export default {
                 currentPage,
                 search
             };
+            let userInfo = JSON.parse(sessionStorage.getItem("jcmx-userinfo"));
+            if (userInfo.purview !== 1) {
+                sendData.userId = userInfo._id;
+            }
             getProject(sendData).then(data => {
                 if (data.status === 1) {
                     commit("setProject", data.data);
                     commit("setPagination", data.pagination);
                 }
-            })
+            });
         }
     }
 }

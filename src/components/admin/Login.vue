@@ -82,7 +82,8 @@ export default {
               let userinfo = {
                 token: data.token,
                 username: data.username,
-                purview: data.purview
+                purview: data.purview,
+                _id: data._id
               };
               if (data.approvePurview) {
                 userinfo.approvePurview = data.approvePurview;
