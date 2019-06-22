@@ -10,6 +10,7 @@
             v-if="scope.row.state === 0"
             :class="dayState(formatTime(scope.row.end_time),'class')"
           >{{dayState(formatTime(scope.row.end_time),'')}}</span>
+          <span v-else-if="scope.row.state === 2" class="warning">已暂停</span>
           <span v-else class="success">已验收</span>
         </template>
       </el-table-column>
@@ -56,8 +57,15 @@
           >修改/查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="210" align="center">
+      <el-table-column fixed="right" label="操作" width="310" align="center">
         <template slot-scope="scope">
+          <el-button
+            type="warning"
+            plain
+            @click="pauseProject(scope.row._id,scope.row.state)"
+            size="mini"
+            :disabled="scope.row.state === 1"
+          >暂停/恢复</el-button>
           <el-button
             type="success"
             plain
@@ -183,6 +191,29 @@ export default {
       this.orderImageUrl = file.url;
       this.orderVisible = true;
     },
+    //暂停项目
+    pauseProject(id, state) {
+      if (flag) {
+        return;
+      }
+      state = state === 2 ? 0 : 2;
+      flag = true;
+      putProject(id, { state }).then(data => {
+        flag = false;
+        let type;
+        if (data.status === 1) {
+          type = "success";
+          this.getProjectList();
+        } else {
+          type = "error";
+        }
+        this.$message({
+          showClose: true,
+          message: data.message,
+          type
+        });
+      });
+    },
     //判断验收单数组中是否有数据
     isHaveOrder(arr) {
       if (arr.length > 0) {
@@ -234,6 +265,7 @@ export default {
           return;
         });
     },
+    //修改上传公司验收单
     submitCompanyAcceptanceOrder() {
       if (flag) {
         return;
@@ -258,6 +290,7 @@ export default {
         this.companyAcceptanceOrderVisible = false;
       });
     },
+    //修改上传客户验收单
     submitClientAcceptanceOrder() {
       if (flag) {
         return;
@@ -282,6 +315,7 @@ export default {
         this.clientAcceptanceOrderVisible = false;
       });
     },
+    //重置验收单表单
     reset() {
       let {
         uploadCompanyAcceptanceOrder,
@@ -333,7 +367,6 @@ export default {
         }
       });
     },
-
     formatTime(time) {
       return parseInt(intervalTime(time).day);
     },
