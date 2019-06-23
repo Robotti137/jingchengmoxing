@@ -1,25 +1,47 @@
 <template>
   <el-container class="manage-container">
     <el-header height="80px">
-      <span>精诚模型项目后台管理系统</span>
+      <span>精诚模型智慧云平台（KingSun Cloud Platforms）</span>
       <span class="el-header-r">
         欢迎您，{{username}}，
         <a @click="logout">退出</a>
       </span>
     </el-header>
     <el-container>
-      <el-aside width="200px">
+      <el-aside width="257px">
         <el-menu
           background-color="#303133"
           text-color="#FFFFFF"
           active-text-color="#ffd04b"
           :default-active="$route.path"
           router
+          style="border:none;text-align:left"
         >
-          <el-menu-item index="/admin/manage/project">项目管理</el-menu-item>
-          <el-menu-item index="/admin/manage/application">立项申请</el-menu-item>
-          <el-menu-item index="/admin/manage/maintain">项目维护</el-menu-item>
-          <el-menu-item index="/admin/manage/remote">远程服务平台</el-menu-item>
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-copy-document"></i>
+              在线项目管理
+            </template>
+            <el-menu-item>生产统计</el-menu-item>
+            <el-menu-item index="/admin/manage/project">项目实施管理</el-menu-item>
+            <el-menu-item>库房管理</el-menu-item>
+            <el-menu-item index="/admin/manage/application">立项申请</el-menu-item>
+          </el-submenu>
+          <el-submenu index="2">
+            <template slot="title">
+              <i class="el-icon-service"></i>
+              项目后期管理
+            </template>
+            <el-menu-item index="/admin/manage/maintain">客户售后</el-menu-item>
+            <el-menu-item>H5推广</el-menu-item>
+          </el-submenu>
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-cloudy"></i>
+              远程服务
+            </template>
+            <el-menu-item index="/admin/manage/remote">远程服务平台</el-menu-item>
+          </el-submenu>
         </el-menu>
       </el-aside>
       <el-main>
@@ -95,5 +117,14 @@ body > .el-container {
 
 .el-header-r > a:hover {
   text-decoration: underline;
+}
+
+.el-submenu__icon-arrow {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  margin-top: -7px;
+  transition: transform 0.3s;
+  font-size: 12px;
 }
 </style>

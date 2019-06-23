@@ -3,7 +3,7 @@
     <div class="login-container" @keyup.enter="submitForm('ruleForm')">
       <el-card class="box-card" shadow="always">
         <p class="login-title">
-          <span>精诚模型项目后台管理系统</span>
+          <span>精诚模型智慧云平台</span>
         </p>
         <el-form
           :model="ruleForm"
