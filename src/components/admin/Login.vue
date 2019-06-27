@@ -1,39 +1,47 @@
 <template>
   <div class="login-background">
-    <div class="login-container" @keyup.enter="submitForm('ruleForm')">
-      <el-card class="box-card" shadow="always">
-        <p class="login-title">
-          <span>精诚模型智慧云平台</span>
-        </p>
-        <el-form
-          :model="ruleForm"
-          status-icon
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="用户名" prop="username">
+    <p class="title" style="padding-top:70px;font-size:30px;">精诚模型智慧云平台</p>
+    <p class="title" style="margin-top:16px;font-size:18px;">KingSun Cloud Platforms</p>
+    <div class="login-container">
+      <div
+        style="z-index:100;padding:7px;background-color:#fff;font-size:0;box-shadow:4px -4px 4px rgba(40,137,238,.3);"
+      >
+        <img src="../../../static/img/login_img.png" style="width:360px;height:280px;">
+      </div>
+      <div
+        style="box-sizing:border-box;width:350px;height:270px;padding:20px 40px;background-color:#fff;border:1px solid #e4e4e4"
+      >
+        <p style="margin:10px 0;text-align:center;font-size:18px;color:#2889ee;">用户登录</p>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+          <el-form-item prop="username">
             <el-input
               type="text"
               v-model="ruleForm.username"
-              autocomplete="off"
-              class="login-input"
+              size="small"
+              placeholder="用户名"
+              prefix-icon="el-icon-user"
             ></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="password">
+          <el-form-item prop="password">
             <el-input
               type="password"
               v-model="ruleForm.password"
-              autocomplete="off"
-              class="login-input"
+              size="small"
+              placeholder="密码"
+              prefix-icon="el-icon-lock"
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')" class="login-btn">提交</el-button>
+            <el-button
+              type="primary"
+              @click="submitForm('ruleForm')"
+              class="login-btn"
+              round
+              size="small"
+            >登 录</el-button>
           </el-form-item>
         </el-form>
-      </el-card>
+      </div>
     </div>
   </div>
 </template>
@@ -112,30 +120,41 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+p {
+  margin: 0;
+}
+
 .login-background {
   height: 100%;
-  background: url("../../assets/img/background_img1.png") no-repeat center top;
+  background: url("../../../static/img/background_img1.png") no-repeat center
+    top;
   background-size: 100% 100%;
 }
 
 .login-container {
-  margin: 0 auto;
-  width: 480px;
-  padding-top: 12rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8%;
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+  color: #2889ee;
 }
 
 .box-card {
-  width: 480px;
   background-color: rgba(255, 255, 255, 0.8);
 }
 
 .login-input {
-  width: 280px;
+  width: 200px;
 }
 
 .login-btn {
-  margin-left: 80px;
+  width: 100%;
 }
 
 .login-title {
@@ -143,8 +162,15 @@ export default {
   text-align: center;
 }
 
-.login-title > span {
-  font-size: 20px;
-  font-weight: bold;
+.el-form-item {
+  margin-bottom: 14px;
+}
+
+.el-input__inner {
+  border-radius: 24px;
+}
+
+.el-input__icon{
+  color: black;
 }
 </style>

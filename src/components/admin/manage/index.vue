@@ -62,12 +62,13 @@ export default {
     logout() {
       sessionStorage.removeItem("jcmx-userinfo", "");
       this.$router.replace("/admin/login");
+      window.location.reload();
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
 .manage-container {
   height: 100%;
 }
@@ -126,5 +127,12 @@ body > .el-container {
   margin-top: -7px;
   transition: transform 0.3s;
   font-size: 12px;
+}
+.el-form-item{
+  margin-bottom: 20px;
+}
+
+.el-input__inner{
+  border-radius: 4px;
 }
 </style>
